@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <algorithm>
+#include <iostream>
 #include "block.hpp"
 State::State() {
   std::memset(grid, 0, sizeof(grid));
@@ -44,9 +45,10 @@ bool State::step() {
       }
     }
     
+    currentBlock = nextBlock;
     srand(time(NULL));
     int randIndex = rand() % 7;
-    currentBlock = new Block(possibleShapes[randIndex], possibleColours[randIndex]);
+    nextBlock = new Block(possibleShapes[randIndex], possibleColours[randIndex]);
   }
 
   for (int i = 0; i < 4; i++) {
@@ -77,10 +79,11 @@ bool State::step() {
           }
         }
       }
+
+      currentBlock = nextBlock;
       srand(time(NULL));
-      
       int randIndex = rand() % 7;
-      currentBlock = new Block(possibleShapes[randIndex], possibleColours[randIndex]);
+      nextBlock = new Block(possibleShapes[randIndex], possibleColours[randIndex]);
     }
   }
   grid[currentBlock->coordinates[0]] = 0;

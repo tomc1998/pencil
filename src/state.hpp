@@ -24,5 +24,6 @@ class State {
      * Colour 7: yellow
      */
     Block* currentBlock; 
+    Block* nextBlock;
 
 };

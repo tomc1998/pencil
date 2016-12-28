@@ -96,6 +96,7 @@ int main(int argc, char** argv) {
   int randIndex = rand() % 7;
 
   game_state->currentBlock = new Block(game_state->possibleShapes[randIndex], game_state->possibleColours[randIndex]);
+  game_state->nextBlock = new Block(game_state->possibleShapes[randIndex], game_state->possibleColours[randIndex]); 
 
   glfwSetWindowUserPointer(window, game_state);
   while(1) {
@@ -147,6 +148,7 @@ int main(int argc, char** argv) {
     if (game_state->stepTimer <= 0) {
       game_state->stepTimer = game_state->stepLength;
       game_state->step();
+      std::cout << game_state->nextBlock->shape << std::endl;
     }
     // Swap buffers, show what we've drawn. We need this at the end of each
     // render!
