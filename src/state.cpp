@@ -9,11 +9,10 @@ State::State() {
   stepLength = 20;
   stepTimer = stepLength;
   moveTimer = 8;
-  softDrop = false;
 }
 
-void State::step() {
-
+bool State::step() {
+  bool finished = false;
   int max = 0;
   for (int i = 0; i < 4; i++) {
     if (currentBlock->coordinates[i] / 10 > max) {
@@ -22,6 +21,7 @@ void State::step() {
   }
 
   if (max == 29) {
+    finished = true;
     delete currentBlock;
 
     for (int i = 0; i < 300; i += 10) {
@@ -57,6 +57,7 @@ void State::step() {
         == currentBlock->coordinates + 4) {
       delete currentBlock;
 
+      finished = true;
       for (int i = 0; i < 300; i += 10) {
         int count = 0;
         for (int x = 0; x < 10; x ++) {
@@ -94,4 +95,6 @@ void State::step() {
   grid[currentBlock->coordinates[1]] = currentBlock->colour;
   grid[currentBlock->coordinates[2]] = currentBlock->colour;
   grid[currentBlock->coordinates[3]] = currentBlock->colour;
+
+  return finished;
 }

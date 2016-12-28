@@ -7,11 +7,10 @@ class State {
   public:
     /** Construct a state object */
     State();
-    void step();
+    bool step();
     int stepLength;
     int stepTimer;
     int moveTimer;
-    bool softDrop;
     int grid[300];
     char possibleShapes[7] = {'z', 's', 't', 'j', 'l', 'i', 'o'};
     int possibleColours[7] = { 1,   2,   3,   4,   5,   6,   7};

@@ -36,6 +36,7 @@ class Block {
      Block(char blockShape, int blockColour);
      void rotateClockwise();
      void rotateAnticlockwise();
+     bool isMovementOutOfBounds(bool isLeft);
      bool outOfBounds();
      bool blockOnLeft(State* state);
      bool blockOnRight(State* state);

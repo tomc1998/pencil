@@ -62,11 +62,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     state->currentBlock->left = false;
   }
   if (key == GLFW_KEY_DOWN && action == GLFW_PRESS) {
-    state->softDrop = true;
+    state->stepLength = 5;
     state->stepTimer = 0;
   }
   if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE) {
-    state->softDrop = false;
+    state->stepLength = 20;
+  }
+  if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+    while(true){
+      if (state->step()){
+        break;
+      }
+    }
   }
 }
 
@@ -85,25 +92,23 @@ int main(int argc, char** argv) {
   State* game_state = new State();
 
   srand(time(NULL));
-  
+
   int randIndex = rand() % 7;
 
   game_state->currentBlock = new Block(game_state->possibleShapes[randIndex], game_state->possibleColours[randIndex]);
 
   glfwSetWindowUserPointer(window, game_state);
   while(1) {
-    if (game_state->softDrop == true) {
-      game_state->stepLength = 5;
-    } 
-    else {
-      game_state->stepLength = 20;
-    }
     game_state->stepTimer -= 1;
     game_state->moveTimer -= 1;
     renderer->render(game_state);
     // Poll input events, i.e keyboard, window, mouse etc.
     glfwPollEvents();
-    if (game_state->currentBlock->left == true && game_state->moveTimer <= 0 && game_state->currentBlock->blockOnLeft(game_state) == false) {
+    //LEFT MOVEMENT
+    if (game_state->currentBlock->left == true &&
+        game_state->moveTimer <= 0 &&
+        game_state->currentBlock->blockOnLeft(game_state) == false &&
+        !game_state->currentBlock->isMovementOutOfBounds(true)) {
       game_state->moveTimer = 8;
       game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
       game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
@@ -114,19 +119,16 @@ int main(int argc, char** argv) {
         game_state->currentBlock->coordinates[i] -= 1;
       }
 
-      if (game_state->currentBlock->outOfBounds()) {
-        for (int i = 0; i < 4; i++) {
-          game_state->currentBlock->coordinates[i] += 1;
-        }
-      }
-  
       game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
       game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
       game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;
       game_state->grid[game_state->currentBlock->coordinates[3]] = game_state->currentBlock->colour;
     }
-
-    if (game_state->currentBlock->right == true && game_state->moveTimer <= 0 && game_state->currentBlock->blockOnRight(game_state) == false) {
+    //RIGHT MOVEMENT
+    if (game_state->currentBlock->right == true &&
+        game_state->moveTimer <= 0 &&
+        game_state->currentBlock->blockOnRight(game_state) == false &&
+        !game_state->currentBlock->isMovementOutOfBounds(false)) {
       game_state->moveTimer = 8;
       game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
       game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
@@ -136,12 +138,7 @@ int main(int argc, char** argv) {
       for (int i = 0; i < 4; i++) {
         game_state->currentBlock->coordinates[i] += 1;
       }
-  
-      if (game_state->currentBlock->outOfBounds()) {
-        for (int i = 0; i < 4; i++) {
-          game_state->currentBlock->coordinates[i] -= 1;
-        }
-      }
+      
       game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
       game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
       game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;

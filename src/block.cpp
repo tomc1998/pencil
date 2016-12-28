@@ -277,6 +277,24 @@ void Block::rotateAnticlockwise() {
   }
 }
 
+bool Block::isMovementOutOfBounds(bool isLeft) {
+  if (isLeft) {
+    for (int ii = 0; ii < 4; ii ++) {
+      if (coordinates[ii] % 10 == 0) {
+        return true;
+      }
+    }
+  }
+  else {
+    for (int ii = 0; ii < 4; ii ++) {
+      if (coordinates[ii] % 10 == 9) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 bool Block::outOfBounds() {
   int min = 10;
   for (int i = 0; i < 4; i++) {
