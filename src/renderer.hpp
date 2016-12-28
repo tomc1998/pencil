@@ -11,7 +11,7 @@ class Renderer {
     void initialise_renderer(float width, float height);
 
     /** Render some state */
-    void render(State& state);
+    void render(State* state);
 
   private:
     /** Static renderer instance for singleton pattern */

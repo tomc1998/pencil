@@ -1,6 +1,8 @@
 #include <GLFW/glfw3.h>
 #include "renderer.hpp"
 #include "state.hpp"
+#include <stdio.h>
+#include <iostream>
 
 Renderer* Renderer::renderer = new Renderer();
 
@@ -25,19 +27,53 @@ void Renderer::initialise_renderer(float width, float height) {
   // which are further away in the 3rd dimension appear smaller.
   glMatrixMode(GL_PROJECTION); // Make sure we're dealing with projection matrices
   glLoadIdentity();            // Load identity matrix
-  glOrtho(0, width, height, 0, -1, 1); // Add an orthographic transformation
+  glOrtho(0, 10, 30, 0, -1, 1); // Add an orthographic transformation
   glMatrixMode(GL_MODELVIEW); // Return to modelview matrix mode
 }
 
-void Renderer::render(State& state) {
+void Renderer::render(State* state) {
     // Clear the color buffer (screen's RGB values)
     glClear(GL_COLOR_BUFFER_BIT); 
     // Draw a square (using immediate mode)
     glBegin(GL_QUADS);
-    glVertex2f(0, 0);
-    glVertex2f(300, 0);
-    glVertex2f(300, 300);
-    glVertex2f(0, 300);
+
+    for (int i = 0; i < sizeof(state->grid); i++){
+      if (state->grid[i] > 0) {
+
+        int x = ((i + 11) % 10);
+        int y = ((i + 11) / 10);
+
+        if (x == 0) {
+          x = 10;
+          y -= 1;
+        }
+        if (state->grid[i] == 1) {
+          glColor3f(1.0f, 0.0f, 0.0f);
+        }
+        else if (state->grid[i] == 2) {
+          glColor3f(0.0f, 1.0f, 0.0f);
+        }
+        else if (state->grid[i] == 3) {
+          glColor3f(1.0f, 0.0f, 1.0f);
+        }
+        else if (state->grid[i] == 4) {
+          glColor3f(0.0f, 0.0f, 1.0f);
+        }
+        else if (state->grid[i] == 5) {
+          glColor3f(1.0f, 0.5f, 0.0f);
+        }
+        else if (state->grid[i] == 6) {
+          glColor3f(0.0f, 1.0f, 1.0f);
+        }
+        else {
+          glColor3f(1.0f, 1.0f, 0.0f);
+        }
+        glVertex2f(x - 0.9f, y - 0.9f);
+        glVertex2f(x       , y - 0.9f);
+        glVertex2f(x       , y       );
+        glVertex2f(x - 0.9f, y       );
+      }
+    }
     glEnd();
 
 }

@@ -25,6 +25,7 @@ set(PENCIL_SRCS
 	${PENCIL_SRC_DIR}/main.cpp
 	${PENCIL_SRC_DIR}/renderer.cpp
 	${PENCIL_SRC_DIR}/state.cpp
+  ${PENCIL_SRC_DIR}/block.cpp
 	)
 
 # Set to build pencil project
@@ -40,7 +41,6 @@ target_include_directories(pencil PUBLIC ${PENCIL_SRC_DIR})
 # OpenGL ###########################################
 # For GNU Linux, should only need to link to this... windows might be a bit
 # different.
-target_link_libraries(pencil GL)
 ####################################################
 
 # GLFW #############################################
@@ -49,7 +49,7 @@ set (GLFW_BUILD_EXAMPLES OFF)
 set (GLFW_BUILD_TESTS OFF)
 set (GLFW_BUILD_DOCS OFF)
 # Make sure GLFW doesn't build vulkan
-set (GLFW_VULKAN_STATIC OFF)
+#set (GLFW_VULKAN_STATIC OFF)
 add_subdirectory(${PENCIL_DEP_DIR}/glfw)
 target_link_libraries(pencil glfw)
 target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/glfw/include)
@@ -58,10 +58,13 @@ target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/glfw/include)
 #############################################
 # COMPILER FLAGS
 #############################################
-if ("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+if("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
 	SET_TARGET_PROPERTIES(pencil
 		PROPERTIES COMPILE_FLAGS "/W4 /Wall")
-elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+ 
+  target_link_libraries(pencil opengl32 gdi32)
+elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 	SET_TARGET_PROPERTIES(pencil
 		PROPERTIES COMPILE_FLAGS "-Wall -Wpedantic -g -std=c++11")
+   target_link_libraries(pencil GL)
 endif()
