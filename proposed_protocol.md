@@ -37,5 +37,6 @@ Any responses to requests will have the same CMD number and timestamp.
 - 32010 = LOBBY_PLAYER_LEFT
 - 32020 = LOBBY_MESSAGE_SENT
 - 32030 = LOBBY_MATCH_FOUND
+
 ---
 ### STATE 20 (In Game):
