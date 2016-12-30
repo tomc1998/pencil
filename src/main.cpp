@@ -100,56 +100,72 @@ int main(int argc, char** argv) {
 
   glfwSetWindowUserPointer(window, game_state);
   while(1) {
-    game_state->stepTimer -= 1;
-    game_state->moveTimer -= 1;
+    if (game_state->flashTimer < 0) {
+      game_state->stepTimer -= 1;
+      game_state->moveTimer -= 1;
+      // Poll input events, i.e keyboard, window, mouse etc.
+      glfwPollEvents();
+      //LEFT MOVEMENT
+      if (game_state->currentBlock->left == true &&
+          game_state->moveTimer <= 0 &&
+          game_state->currentBlock->blockOnLeft(game_state) == false &&
+          !game_state->currentBlock->isMovementOutOfBounds(true)) {
+        game_state->moveTimer = 8;
+        game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[2]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[3]] = 0;
+
+        for (int i = 0; i < 4; i++) {
+          game_state->currentBlock->coordinates[i] -= 1;
+        }
+
+        game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[3]] = game_state->currentBlock->colour;
+      }
+      //RIGHT MOVEMENT
+      if (game_state->currentBlock->right == true &&
+          game_state->moveTimer <= 0 &&
+          game_state->currentBlock->blockOnRight(game_state) == false &&
+          !game_state->currentBlock->isMovementOutOfBounds(false)) {
+        game_state->moveTimer = 8;
+        game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[2]] = 0;
+        game_state->grid[game_state->currentBlock->coordinates[3]] = 0;
+
+        for (int i = 0; i < 4; i++) {
+          game_state->currentBlock->coordinates[i] += 1;
+        }
+        
+        game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;
+        game_state->grid[game_state->currentBlock->coordinates[3]] = game_state->currentBlock->colour;
+      }
+      if (game_state->stepTimer <= 0) {
+        game_state->stepTimer = game_state->stepLength;
+        game_state->step();
+        if (game_state->needNewBlock) {
+          delete game_state->currentBlock;
+          game_state->currentBlock = game_state->nextBlock;
+          srand(time(NULL));
+          randIndex = rand() % 7;
+          game_state->nextBlock = new Block(game_state->possibleShapes[randIndex], game_state->possibleColours[randIndex]); 
+          game_state->needNewBlock = false;
+          std::cout << game_state->flashTimer << std::endl;
+
+        }
+        std::cout << game_state->nextBlock->shape << std::endl;
+      }
+    }
+    else {
+      game_state->flashTimer -= 1;
+      std::cout << game_state->flashTimer << std::endl;
+    }
     renderer->render(game_state);
-    // Poll input events, i.e keyboard, window, mouse etc.
-    glfwPollEvents();
-    //LEFT MOVEMENT
-    if (game_state->currentBlock->left == true &&
-        game_state->moveTimer <= 0 &&
-        game_state->currentBlock->blockOnLeft(game_state) == false &&
-        !game_state->currentBlock->isMovementOutOfBounds(true)) {
-      game_state->moveTimer = 8;
-      game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[2]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[3]] = 0;
-
-      for (int i = 0; i < 4; i++) {
-        game_state->currentBlock->coordinates[i] -= 1;
-      }
-
-      game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[3]] = game_state->currentBlock->colour;
-    }
-    //RIGHT MOVEMENT
-    if (game_state->currentBlock->right == true &&
-        game_state->moveTimer <= 0 &&
-        game_state->currentBlock->blockOnRight(game_state) == false &&
-        !game_state->currentBlock->isMovementOutOfBounds(false)) {
-      game_state->moveTimer = 8;
-      game_state->grid[game_state->currentBlock->coordinates[0]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[1]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[2]] = 0;
-      game_state->grid[game_state->currentBlock->coordinates[3]] = 0;
-
-      for (int i = 0; i < 4; i++) {
-        game_state->currentBlock->coordinates[i] += 1;
-      }
-      
-      game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;
-      game_state->grid[game_state->currentBlock->coordinates[3]] = game_state->currentBlock->colour;
-    }
-    if (game_state->stepTimer <= 0) {
-      game_state->stepTimer = game_state->stepLength;
-      game_state->step();
-      std::cout << game_state->nextBlock->shape << std::endl;
-    }
     // Swap buffers, show what we've drawn. We need this at the end of each
     // render!
     glfwSwapBuffers(window); 

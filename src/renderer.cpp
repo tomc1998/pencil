@@ -47,6 +47,8 @@ void Renderer::render(State* state) {
           x = 10;
           y -= 1;
         }
+
+        float flashing = 0.9f;
         if (state->grid[i] == 1) {
           glColor3f(1.0f, 0.0f, 0.0f);
         }
@@ -65,13 +67,22 @@ void Renderer::render(State* state) {
         else if (state->grid[i] == 6) {
           glColor3f(0.0f, 1.0f, 1.0f);
         }
-        else {
+        else if (state->grid[i] == 7) {
           glColor3f(1.0f, 1.0f, 0.0f);
         }
-        glVertex2f(x - 0.9f, y - 0.9f);
-        glVertex2f(x       , y - 0.9f);
-        glVertex2f(x       , y       );
-        glVertex2f(x - 0.9f, y       );
+        else {
+          flashing = 1.0f;
+          if (state->flashTimer % 4 > 2) {
+              glColor3f(1.0f, 1.0f, 1.0f);
+          }
+          else {
+          glColor3f(0.0f, 0.0f, 0.0f);
+          }
+        }
+        glVertex2f(x - flashing, y - flashing);
+        glVertex2f(x           , y - flashing);
+        glVertex2f(x           , y           );
+        glVertex2f(x - flashing, y           );
       }
     }
     glEnd();
