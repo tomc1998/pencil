@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <SOIL.h>
 #include "renderer.hpp"
 #include "state.hpp"
 #include "block.hpp"
@@ -79,6 +80,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 
 int main(int argc, char** argv) {
+  /* load an image file directly as a new OpenGL texture */
+  GLuint tex_2d = SOIL_load_OGL_texture
+    (
+     "img.png",
+     SOIL_LOAD_AUTO,
+     SOIL_CREATE_NEW_ID,
+     SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+    );
   float screen_width = 300;
   float screen_height = 900;
   // Initialise a window
@@ -139,7 +148,7 @@ int main(int argc, char** argv) {
         for (int i = 0; i < 4; i++) {
           game_state->currentBlock->coordinates[i] += 1;
         }
-        
+
         game_state->grid[game_state->currentBlock->coordinates[0]] = game_state->currentBlock->colour;
         game_state->grid[game_state->currentBlock->coordinates[1]] = game_state->currentBlock->colour;
         game_state->grid[game_state->currentBlock->coordinates[2]] = game_state->currentBlock->colour;

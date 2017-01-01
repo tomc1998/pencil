@@ -49,21 +49,26 @@ set (GLFW_BUILD_EXAMPLES OFF)
 set (GLFW_BUILD_TESTS OFF)
 set (GLFW_BUILD_DOCS OFF)
 # Make sure GLFW doesn't build vulkan
-#set (GLFW_VULKAN_STATIC OFF)
+set (GLFW_VULKAN_STATIC OFF)
 add_subdirectory(${PENCIL_DEP_DIR}/glfw)
 target_link_libraries(pencil glfw)
 target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/glfw/include)
+
+# SOIL #############################################
+add_subdirectory(${PENCIL_DEP_DIR}/soil)
+target_link_libraries(pencil soil)
+target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/soil/src)
 ####################################################
 
 #############################################
 # COMPILER FLAGS
 #############################################
-if("${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC")
+if(MSVC)
 	SET_TARGET_PROPERTIES(pencil
 		PROPERTIES COMPILE_FLAGS "/W4 /Wall")
  
   target_link_libraries(pencil opengl32 gdi32)
-elseif("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+elseif(CMAKE_COMPILER_IS_GNUCXX)
 	SET_TARGET_PROPERTIES(pencil
 		PROPERTIES COMPILE_FLAGS "-Wall -Wpedantic -g -std=c++11")
    target_link_libraries(pencil GL)
