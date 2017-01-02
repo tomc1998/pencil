@@ -56,7 +56,7 @@ target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/glfw/include)
 
 # SOIL #############################################
 add_subdirectory(${PENCIL_DEP_DIR}/soil)
-target_link_libraries(pencil soil)
+target_link_libraries(pencil SOIL)
 target_include_directories(pencil PUBLIC ${PENCIL_DEP_DIR}/soil/src)
 ####################################################
 
